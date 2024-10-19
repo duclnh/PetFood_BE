@@ -28,7 +28,14 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    steps:      
+    steps:
+      - name: Set up container
+        run: |
+              echo "DOCKER_IMAGE=${{ vars.IMAGE_NAME }}:${{ vars.VERSION_DEV }}" >> $GITHUB_ENV
+              echo "CONTAINER_NAME=${{ vars.CONTAINER_NAME_DEV }}" >> $GITHUB_ENV
+              echo "CONTAINER_PORT=${{ vars.CONTAINER_PORT_DEV }}" >> $GITHUB_ENV
+              echo "VOLUME=${{ vars.VOLUME_UPLOAD_FILE_DEV }}" >> $GITHUB_ENV
+            
       - name: Deploy package to VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
