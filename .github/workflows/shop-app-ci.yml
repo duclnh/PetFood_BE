@@ -35,7 +35,8 @@ jobs:
               echo "CONTAINER_NAME=${{ vars.CONTAINER_NAME_DEV }}" >> $GITHUB_ENV
               echo "CONTAINER_PORT=${{ vars.CONTAINER_PORT_DEV }}" >> $GITHUB_ENV
               echo "VOLUME=${{ vars.VOLUME_UPLOAD_FILE_DEV }}" >> $GITHUB_ENV
-            
+              echo "CONNECTSTRING=${{ secrets.CONNECTSTRING_DEV }}" >> $GITHUB_ENV
+              echo "NETWORK=${{ secrets.NETWORK_DEV }}" >> $GITHUB_ENV
       - name: Deploy package to VPS
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -58,6 +59,8 @@ jobs:
             docker pull ${{ env.DOCKER_IMAGE }}
             docker run -d \
               --name ${{ env.CONTAINER_NAME }} \
+              --network ${{ env.NETWORK }} \
               --restart unless-stopped \
               -p ${{ env.CONTAINER_PORT }}:${{ vars.PORT }} \
+              -e "SPRING_DATASOURCE_URL=${{ env.CONNECTSTRING }}" \
               ${{ env.DOCKER_IMAGE }}
